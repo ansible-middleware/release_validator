@@ -1,0 +1,38 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: registry.access.redhat.com/ubi8/ubi-init:latest
+    pre_build_image: true
+    privileged: true
+    command: "/usr/sbin/init"
+    port_bindings:
+      - 8080:8080
+    published_ports:
+      - 0.0.0.0:8080:8080/TCP
+provisioner:
+  name: ansible
+  playbooks:
+    converge: converge.yml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_COLLECTIONS_PATHS: "~/.ansible/collections/"
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - side_effect
+    - verify
+    - cleanup
+    - destroy

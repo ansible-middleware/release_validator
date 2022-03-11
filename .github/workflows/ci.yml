@@ -1,0 +1,37 @@
+---
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: ["3.10"]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python_version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python_version }}
+
+      - name: Create default collection path
+        run: |
+          mkdir -p /home/runner/.ansible/collections/ansible_collections
+
+      - name: Install required collection
+        run: ansible-galaxy collection install -r upstream_requirements.yml
+        working-directory: .
+
+      - name: Run molecule test
+        run: molecule test --all
+        working-directory: .
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'

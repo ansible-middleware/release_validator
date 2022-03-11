@@ -1,0 +1,2 @@
+---
+- import_playbook: "{{ lookup('env', 'HOME') }}/.ansible/collections/ansible_collections/middleware_automation/{{ lookup('env', 'MOLECULE_SCENARIO_NAME') }}/playbook.yml"
