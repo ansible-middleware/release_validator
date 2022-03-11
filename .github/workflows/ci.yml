@@ -31,7 +31,9 @@ jobs:
           mkdir -p /home/runner/.ansible/collections/ansible_collections
 
       - name: Install required collection
-        run: ansible-galaxy collection install -r upstream_requirements.yml
+        run: |
+          ansible-galaxy collection install -r upstream_requirements.yml
+          ansible-galaxy collection install community.docker
         working-directory: .
 
       - name: Run molecule test
